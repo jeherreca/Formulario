@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import Camera from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
 
 class Form extends Component{
 
@@ -16,6 +17,11 @@ class Form extends Component{
             email: "",
             phone: "",
             celphone: "",
+            via: "",
+            number1: "",
+            number2: "",
+            number3: "",
+            house: "",
             address: {},
             neighborhood: "",
             city: "",
@@ -27,6 +33,7 @@ class Form extends Component{
             instagram: "",
             twitter: "",
             disability: [],
+            other: "",
             education: "",
             job: "",
             languages: {},
@@ -37,6 +44,9 @@ class Form extends Component{
             newnamecontact2: "",
             newphonecontact2: "",
         }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleDocumentRadio= this.handleDocumentRadio.bind(this);
+        this.handleDisabilities= this.handleDisabilities.bind(this);
     }
     componentDidMount(){
         fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json').then((response) => {
@@ -55,19 +65,44 @@ class Form extends Component{
             console.log(this.state.departments);
         })
     }
+    onTakePhoto (dataUri) {
+        // Do stuff with the dataUri photo...
+        console.log('takePhoto');
+      }    
+    handleDocumentRadio(e){
+        this.setState({
+            document: e.target.value,
+        })
+        console.log(this.state)
+    }
+    handleDisabilities(e){
+        this.setState({
+            other: e.target.value,
+        })
+        console.log(this.state)
+    }
+    handleChange(e){
+        this.setState({
+            [e.target.name]: e.target.value,
+        })
+        console.log(this.state)
+    }
     render(){
         return(
             <div>
+                <Camera
+                    onTakePhoto = { (dataUri) => { this.onTakePhoto(dataUri); } }
+                />
                 <form>
-                    Nombre: <input type="text" name="name" /><br />
-                    Primer apellido: <input type="text" name="lastname1" /><br />
-                    Segundo apellido: <input type="text" name="lastname2" /><br />
+                    Nombre: <input type="text" name="name" onChange={this.handleChange} value={this.state.name} /><br />
+                    Primer apellido: <input type="text" name="lastname1" onChange={this.handleChange} value={this.state.lastname1} /><br />
+                    Segundo apellido: <input type="text" name="lastname2" onChange={this.handleChange} value={this.state.lastname2} /><br />
                     Documento:
-                    <input type="radio" name="document" value="Tarjeta de identidad" />T.I
-                    <input type="radio" name="document" value="Cedula de ciudadania" /> C.C
-                    <input type="radio" name="document" value="Cedula de extranjeria" /> C.E 
-                    <input type="radio" name="document" value="NIT" /> NIT 
-                    <input type="text" name="id" /><br />
+                    <input type="radio" value="Tarjeta de identidad" checked={this.state.document === "Tarjeta de identidad"} onChange={this.handleDocumentRadio} />T.I
+                    <input type="radio" value="Cedula de ciudadania" checked={this.state.document === "Cedula de ciudadania"} onChange={this.handleDocumentRadio} /> C.C
+                    <input type="radio" value="Cedula de extranjeria" checked={this.state.document === "Cedula de extranjeria"} onChange={this.handleDocumentRadio} /> C.E 
+                    <input type="radio" value="NIT" checked={this.state.document === "NIT"} onChange={this.handleDocumentRadio} /> NIT 
+                    <input type="text" name="id" onChange={this.handleChange} /><br />
                     Sexo:
                     <select name="gender" required>
                         <option value="" disabled selected>Seleccione...</option>
@@ -80,15 +115,18 @@ class Form extends Component{
                         <option value="Sí">Sí</option> 
                         <option value="No">No</option>
                     </select><br />
-                    Fecha de nacimiento: <input type="date" name="birth" /><br />
+                    Fecha de nacimiento: <input type="date" name="birth" onChange={this.handleChange} value={this.state.birth} /><br />
                     Dirección: <br />
                     <select required>
                         <option value="calle">Calle</option>
                         <option value="carrera">Carrera</option>
                     </select>
-                    <input type="text" /> # <input type="text" /> - <input type="text" />, <input type="text" /><br />
+                    <input type="text" name="number1" onChange={this.handleChange} value={this.state.number1} /> 
+                    # <input type="text" name="number2" onChange={this.handleChange} value={this.state.number2} /> 
+                    - <input type="text" name="number3" onChange={this.handleChange} value={this.state.number3} />
+                    , <input type="text" name="house" onChange={this.handleChange} value={this.state.house} /><br />
                     Departamento:
-                    <select name="department" onChange={this.getCities} value={this.state.department} required>
+                    <select name="department" required>
                         <option value="" disabled selected>Departamento ...</option>
                         {
                             this.state.departments.map((item,i)=> <option value={item} key={i}>{item}</option> )
@@ -98,20 +136,20 @@ class Form extends Component{
                     <select required>
                         <option value="city">Municipio ...</option>  
                     </select><br />
-                    Barrio: <input type="text" name="neighborhood" /><br />
-                    Teléfono: <input type="text" name="phone" /><br />
-                    Celular: <input type="text" name="celphone" /><br />
-                    Correo electrónico: <input type="text" name="email" /><br />
-                    Facebook: <input type="text" name="facebook" /><br />
-                    Instagram: <input type="text" name="instagram" /><br />
-                    Twitter: <input type="text" name="twitter" /><br />
+                    Barrio: <input type="text" name="neighborhood" onChange={this.handleChange} value={this.state.neighborhood} /><br />
+                    Teléfono: <input type="text" name="phone" onChange={this.handleChange} value={this.state.phone} /><br />
+                    Celular: <input type="text" name="celphone" onChange={this.handleChange} value={this.state.celphone} /><br />
+                    Correo electrónico: <input type="text" name="email" onChange={this.handleChange} value={this.state.email} /><br />
+                    Facebook: <input type="text" name="facebook" onChange={this.handleChange} value={this.state.facebook} /><br />
+                    Instagram: <input type="text" name="instagram" onChange={this.handleChange} value={this.state.instagram} /><br />
+                    Twitter: <input type="text" name="twitter" onChange={this.handleChange} value={this.state.twitter} /><br />
                     Discapacidad: 
                     <input type="radio" name="disability" value="Ceguera" />Ceguera
                     <input type="radio" name="disability" value="Sordera" />Sordera
                     <input type="radio" name="disability" value="Deficiencia visual" />Deficiencia visual
                     <input type="radio" name="disability" value="Deficiencia auditiva" />Deficiencia auditiva
                     <input type="radio" name="disability" value="Discapacidad motriz" />Discapacidad motriz
-                    <input type="radio" name="disability" value="Otro" />Otro<input type="text" name="Otro" /><br />
+                    <input type="radio" name="disability" value="Otro" />Otro<input type="text" name="Otro" onChange={this.handleDisabilities} value={this.state.other} /><br />
                     Educación:
                     <select name="education" required>
                         <option value="" disabled selected>Seleccione...</option>
@@ -122,7 +160,7 @@ class Form extends Component{
                         <option value="Pregrado">Pregrado</option>
                         <option value="Postgrado">Postgrado</option>
                     </select><br /> 
-                    Profesión: <input type="text" name="job" /><br />
+                    Profesión: <input type="text" name="job" onChange={this.handleChange} value={this.state.job} /><br />
                     Áreas de interés:
                     <input type="checkbox" name="interest1" value="Tecnología" />Tecnología
                     <input type="checkbox" name="interest2" value="Electrónica" />Electrónica
@@ -132,11 +170,11 @@ class Form extends Component{
                     <input type="checkbox" name="interest6" value="Programación" />Programación
                     <input type="checkbox" name="interest7" value="Construcción" />Construcción
                     <input type="checkbox" name="interest8" value="Música" />Música<br />
-                    Nombre persona interesada 1: <input tyrpe="text" name="newnamecontact1" /><br />
-                    Teléfono persona interesada 1: <input tyrpe="text" name="newphonecontact1" /><br />
-                    Nombre persona interesada 2: <input tyrpe="text" name="newnamecontact2" /><br />
-                    Teléfono persona interesada 2: <input tyrpe="text" name="newphonecontact2" /><br />
-                    <button type="button">Click Me!</button>
+                    Nombre persona interesada 1: <input tyrpe="text" name="newnamecontact1" onChange={this.handleChange} value={this.state.newnamecontact1} /><br />
+                    Teléfono persona interesada 1: <input tyrpe="text" name="newphonecontact1" onChange={this.handleChange} value={this.state.newphonecontact1} /><br />
+                    Nombre persona interesada 2: <input tyrpe="text" name="newnamecontact2" onChange={this.handleChange} value={this.state.newnamecontact2} /><br />
+                    Teléfono persona interesada 2: <input tyrpe="text" name="newphonecontact2" onChange={this.handleChange} value={this.state.newphonecontact2} /><br />
+                    <button>Enviar</button>
                 </form>
             </div>
         );
