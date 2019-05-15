@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 
+
+
 class Form extends Component{
 
     constructor(props){
@@ -25,6 +27,7 @@ class Form extends Component{
             address: {},
             neighborhood: "",
             city: "",
+            cities: [],
             department: "",
             departments: [],
             health: "",
@@ -37,8 +40,6 @@ class Form extends Component{
             education: "",
             job: "",
             languages: {},
-            namecontact: "",
-            phonecontact: "",
             newnamecontact1:"",
             newphonecontact1:"",
             newnamecontact2: "",
@@ -47,6 +48,8 @@ class Form extends Component{
         this.handleChange = this.handleChange.bind(this);
         this.handleDocumentRadio= this.handleDocumentRadio.bind(this);
         this.handleDisabilities= this.handleDisabilities.bind(this);
+        this.handleDepartments= this.handleDepartments.bind(this);
+        this.getDepartmentCities = this.getDepartmentCities.bind(this);
     }
     componentDidMount(){
         fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json').then((response) => {
@@ -62,30 +65,52 @@ class Form extends Component{
             this.setState({
                 departments: list
             })
-            console.log(this.state.departments);
+
         })
+    }
+    getDepartmentCities(value){
+        fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json?departamento='+value).then((response)=> {
+            return response.json()
+        })
+        .then((resource)=> {
+            const list = [];
+            resource.forEach((element)=>{
+                list.push(element.municipio)
+            })
+            this.setState({
+                cities: list
+            })
+        })
+
     }
     onTakePhoto (dataUri) {
         // Do stuff with the dataUri photo...
         console.log('takePhoto');
-      }    
+    }  
     handleDocumentRadio(e){
         this.setState({
             document: e.target.value,
         })
-        console.log(this.state)
+
     }
-    handleDisabilities(e){
-        this.setState({
-            other: e.target.value,
-        })
-        console.log(this.state)
+    handleInterest(e){
+        if (this.state.interest.length < 5){
+            interest.push(e.value)
+        }
     }
     handleChange(e){
         this.setState({
             [e.target.name]: e.target.value,
         })
         console.log(this.state)
+    }
+    handleDepartments(e){
+        this.setState({
+            [e.target.name]: e.target.value,
+            city: ""
+        })
+        this.getDepartmentCities(e.target.value)
+
     }
     render(){
         return(
@@ -102,22 +127,23 @@ class Form extends Component{
                     <input type="radio" value="Cedula de ciudadania" checked={this.state.document === "Cedula de ciudadania"} onChange={this.handleDocumentRadio} /> C.C
                     <input type="radio" value="Cedula de extranjeria" checked={this.state.document === "Cedula de extranjeria"} onChange={this.handleDocumentRadio} /> C.E 
                     <input type="radio" value="NIT" checked={this.state.document === "NIT"} onChange={this.handleDocumentRadio} /> NIT 
-                    <input type="text" name="id" onChange={this.handleChange} /><br />
+                    <input type="text" name="id" onChange={this.handleChange} value={this.state.id} /><br />
                     Sexo:
-                    <select name="gender" required>
+                    <select name="gender" value={this.state.gender} onChange={this.handleChange} required>
                         <option value="" disabled selected>Seleccione...</option>
                         <option value="Masculino">Masculino</option> 
                         <option value="Femenino">Femenino</option>
                     </select><br />
                     ¿Tiene Sisben?:
-                    <select name="health" required>
+                    <select name="health" value={this.state.health} onChange={this.handleChange} required>
                         <option value="" disabled selected>Seleccione...</option>
                         <option value="Sí">Sí</option> 
                         <option value="No">No</option>
                     </select><br />
                     Fecha de nacimiento: <input type="date" name="birth" onChange={this.handleChange} value={this.state.birth} /><br />
                     Dirección: <br />
-                    <select required>
+                    <select name="via" value={this.state.via} onChange={this.handleChange} required>
+                        <option value="" disabled selected>Selecione...</option>
                         <option value="calle">Calle</option>
                         <option value="carrera">Carrera</option>
                     </select>
@@ -126,15 +152,18 @@ class Form extends Component{
                     - <input type="text" name="number3" onChange={this.handleChange} value={this.state.number3} />
                     , <input type="text" name="house" onChange={this.handleChange} value={this.state.house} /><br />
                     Departamento:
-                    <select name="department" required>
+                    <select name="department" value={this.state.department} onChange={this.handleDepartments} required>
                         <option value="" disabled selected>Departamento ...</option>
                         {
                             this.state.departments.map((item,i)=> <option value={item} key={i}>{item}</option> )
                         }   
                     </select><br />              
                     Municipio:
-                    <select required>
-                        <option value="city">Municipio ...</option>  
+                    <select name="city" value={this.state.city} onChange={this.handleChange} required>
+                        <option value="" disabled selected>Municipio ...</option>  
+                        {
+                            this.state.cities.map((item, i) => <option value={item} key={i+32}>{item}</option>)
+                        }
                     </select><br />
                     Barrio: <input type="text" name="neighborhood" onChange={this.handleChange} value={this.state.neighborhood} /><br />
                     Teléfono: <input type="text" name="phone" onChange={this.handleChange} value={this.state.phone} /><br />
@@ -149,9 +178,9 @@ class Form extends Component{
                     <input type="radio" name="disability" value="Deficiencia visual" />Deficiencia visual
                     <input type="radio" name="disability" value="Deficiencia auditiva" />Deficiencia auditiva
                     <input type="radio" name="disability" value="Discapacidad motriz" />Discapacidad motriz
-                    <input type="radio" name="disability" value="Otro" />Otro<input type="text" name="Otro" onChange={this.handleDisabilities} value={this.state.other} /><br />
+                    <input type="radio" name="disability" value="Otro" />Otro<input type="text" name="Otro" onChange={this.handleChange} value={this.state.other} /><br />
                     Educación:
-                    <select name="education" required>
+                    <select name="education" value={this.state.education} onChange={this.handleChange} required>
                         <option value="" disabled selected>Seleccione...</option>
                         <option value="Primaria">Primaria</option> 
                         <option value="Bachillerato">Bachillerato</option>
@@ -161,8 +190,8 @@ class Form extends Component{
                         <option value="Postgrado">Postgrado</option>
                     </select><br /> 
                     Profesión: <input type="text" name="job" onChange={this.handleChange} value={this.state.job} /><br />
-                    Áreas de interés:
-                    <input type="checkbox" name="interest1" value="Tecnología" />Tecnología
+                    Áreas de interés (Máximo 5):
+                    <input type="checkbox" name="interest1" onChange={}value="Tecnología" />Tecnología
                     <input type="checkbox" name="interest2" value="Electrónica" />Electrónica
                     <input type="checkbox" name="interest3" value="Carpintería" />Carpintería
                     <input type="checkbox" name="interest4" value="Contabilidad" />Contabilidad<br />
