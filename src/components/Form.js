@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
-
-
+import firebase from '../firebase';
 
 class Form extends Component{
 
@@ -47,7 +46,6 @@ class Form extends Component{
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleDocumentRadio= this.handleDocumentRadio.bind(this);
-        this.handleDisabilities= this.handleDisabilities.bind(this);
         this.handleDepartments= this.handleDepartments.bind(this);
         this.getDepartmentCities = this.getDepartmentCities.bind(this);
     }
@@ -94,8 +92,15 @@ class Form extends Component{
 
     }
     handleInterest(e){
-        if (this.state.interest.length < 5){
-            interest.push(e.value)
+        let array = this.state.interest
+        let selectedVale = event.target.value;
+        if(event.target.checked === true){
+            if (this.state.interest.length < 5){
+                let array = this.state.interest.push(e.target.value)
+                this.setState({
+                    interest: array
+                })
+            }
         }
     }
     handleChange(e){
@@ -173,8 +178,6 @@ class Form extends Component{
                     Instagram: <input type="text" name="instagram" onChange={this.handleChange} value={this.state.instagram} /><br />
                     Twitter: <input type="text" name="twitter" onChange={this.handleChange} value={this.state.twitter} /><br />
                     Discapacidad: 
-                    <input type="radio" name="disability" value="Ceguera" />Ceguera
-                    <input type="radio" name="disability" value="Sordera" />Sordera
                     <input type="radio" name="disability" value="Deficiencia visual" />Deficiencia visual
                     <input type="radio" name="disability" value="Deficiencia auditiva" />Deficiencia auditiva
                     <input type="radio" name="disability" value="Discapacidad motriz" />Discapacidad motriz
@@ -191,7 +194,7 @@ class Form extends Component{
                     </select><br /> 
                     Profesión: <input type="text" name="job" onChange={this.handleChange} value={this.state.job} /><br />
                     Áreas de interés (Máximo 5):
-                    <input type="checkbox" name="interest1" onChange={}value="Tecnología" />Tecnología
+                    <input type="checkbox" name="interest1" value="Tecnología" />Tecnología
                     <input type="checkbox" name="interest2" value="Electrónica" />Electrónica
                     <input type="checkbox" name="interest3" value="Carpintería" />Carpintería
                     <input type="checkbox" name="interest4" value="Contabilidad" />Contabilidad<br />
