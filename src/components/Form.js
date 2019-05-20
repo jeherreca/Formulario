@@ -13,6 +13,7 @@ class Form extends Component{
             lastname2: "",
             document: "",
             id: "",
+            photo: '',
             gender: "",
             birth: "",
             email: "",
@@ -48,6 +49,8 @@ class Form extends Component{
         this.handleDocumentRadio= this.handleDocumentRadio.bind(this);
         this.handleDepartments= this.handleDepartments.bind(this);
         this.getDepartmentCities = this.getDepartmentCities.bind(this);
+        this.onTakePhoto = this.onTakePhoto.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
     componentDidMount(){
         fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json').then((response) => {
@@ -83,7 +86,10 @@ class Form extends Component{
     }
     onTakePhoto (dataUri) {
         // Do stuff with the dataUri photo...
-        console.log('takePhoto');
+        this.setState({
+            photo: dataUri
+        })
+        console.log(dataUri);
     }  
     handleDocumentRadio(e){
         this.setState({
@@ -93,8 +99,8 @@ class Form extends Component{
     }
     handleInterest(e){
         let array = this.state.interest
-        let selectedVale = event.target.value;
-        if(event.target.checked === true){
+        let selectedVale = e.target.value;
+        if(e.target.checked === true){
             if (this.state.interest.length < 5){
                 let array = this.state.interest.push(e.target.value)
                 this.setState({
@@ -116,6 +122,21 @@ class Form extends Component{
         })
         this.getDepartmentCities(e.target.value)
 
+    }
+    handleSubmit(e){
+        console.log("Enviar")
+        firebase.database().ref('usuarios/'+this.state.name+' '+this.state.lastname1+' '+this.state.lastname2).set({
+            nombre: this.state.name + ' '+this.state.lastname1 +' '+ this.state.lastname2,
+            tipo_de_documento: this.state.document,
+            identificacion: this.state.id,
+            sexo: this.state.gender,
+            fecha_de_nacimiento: this.state.birth,
+            correo: this.state.email,
+            telefono: this.state.phone,
+            celular: this.state.celphone,
+        })
+
+        firebase.storage().ref().child('fotos/'+this.state.id).putString(this.state.photo, 'data_url')
     }
     render(){
         return(
@@ -206,8 +227,8 @@ class Form extends Component{
                     Teléfono persona interesada 1: <input tyrpe="text" name="newphonecontact1" onChange={this.handleChange} value={this.state.newphonecontact1} /><br />
                     Nombre persona interesada 2: <input tyrpe="text" name="newnamecontact2" onChange={this.handleChange} value={this.state.newnamecontact2} /><br />
                     Teléfono persona interesada 2: <input tyrpe="text" name="newphonecontact2" onChange={this.handleChange} value={this.state.newphonecontact2} /><br />
-                    <button>Enviar</button>
                 </form>
+                <button onClick={this.handleSubmit}>Enviar</button>
             </div>
         );
     }
