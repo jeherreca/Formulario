@@ -12,6 +12,7 @@ class Form extends Component{
             lastname1: "",
             lastname2: "",
             document: "",
+            documentscan: "",
             id: "",
             photo: '',
             gender: "",
@@ -24,7 +25,6 @@ class Form extends Component{
             number2: "",
             number3: "",
             house: "",
-            address: {},
             neighborhood: "",
             city: "",
             cities: [],
@@ -51,6 +51,8 @@ class Form extends Component{
         this.getDepartmentCities = this.getDepartmentCities.bind(this);
         this.onTakePhoto = this.onTakePhoto.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleInterest = this.handleInterest.bind(this)
+        this.handleDocument = this.handleDocument.bind(this)
     }
     componentDidMount(){
         fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json').then((response) => {
@@ -69,6 +71,12 @@ class Form extends Component{
 
         })
     }
+    handleDocument(e){
+        console.log(e.target.files[0])
+        this.setState({
+            documentscan: e.target.files[0],
+        })
+    }
     getDepartmentCities(value){
         fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json?departamento='+value).then((response)=> {
             return response.json()
@@ -85,7 +93,6 @@ class Form extends Component{
 
     }
     onTakePhoto (dataUri) {
-        // Do stuff with the dataUri photo...
         this.setState({
             photo: dataUri
         })
@@ -105,7 +112,7 @@ class Form extends Component{
                 let array = this.state.interest.push(e.target.value)
                 this.setState({
                     interest: array
-                })
+                })                      
             }
         }
     }
@@ -113,7 +120,6 @@ class Form extends Component{
         this.setState({
             [e.target.name]: e.target.value,
         })
-        console.log(this.state)
     }
     handleDepartments(e){
         this.setState({
@@ -121,9 +127,9 @@ class Form extends Component{
             city: ""
         })
         this.getDepartmentCities(e.target.value)
-
     }
     handleSubmit(e){
+        e.preventDefault();
         console.log("Enviar")
         firebase.database().ref('usuarios/'+this.state.name+' '+this.state.lastname1+' '+this.state.lastname2).set({
             nombre: this.state.name + ' '+this.state.lastname1 +' '+ this.state.lastname2,
@@ -134,9 +140,24 @@ class Form extends Component{
             correo: this.state.email,
             telefono: this.state.phone,
             celular: this.state.celphone,
+            direccion: this.state.via+' '+this.state.number1+' # '+this.state.number2+' - '+this.state.number3+', '+this.state.house,
+            sisben: this.state.health,
+            barrio: this.state.neighborhood,
+            ciudad: this.state.cities,
+            departamento: this.state.department,
+            facebook: this.state.facebook,
+            instagram: this.state.instagram,
+            twitter: this.state.twitter,
+            educacion: this.state.education,
+            profesion: this.state.profesion,
+            nombrecontacto1: this.state.newnamecontact1,
+            numerocontacto1: this.state.newphonecontact1,
+            nombrecontacto2: this.state.newnamecontact2,
+            numerocontacto2: this.state.newphonecontact2,
         })
 
         firebase.storage().ref().child('fotos/'+this.state.id).putString(this.state.photo, 'data_url')
+        firebase.storage().ref().child('documentos/'+this.state.id).put(this.state.documentscan)
     }
     render(){
         return(
@@ -154,6 +175,7 @@ class Form extends Component{
                     <input type="radio" value="Cedula de extranjeria" checked={this.state.document === "Cedula de extranjeria"} onChange={this.handleDocumentRadio} /> C.E 
                     <input type="radio" value="NIT" checked={this.state.document === "NIT"} onChange={this.handleDocumentRadio} /> NIT 
                     <input type="text" name="id" onChange={this.handleChange} value={this.state.id} /><br />
+                    Documento escaneado: <input type="file" name="documentscan" onChange={this.handleDocument}/><br />
                     Sexo:
                     <select name="gender" value={this.state.gender} onChange={this.handleChange} required>
                         <option value="" disabled selected>Seleccione...</option>
@@ -192,8 +214,8 @@ class Form extends Component{
                         }
                     </select><br />
                     Barrio: <input type="text" name="neighborhood" onChange={this.handleChange} value={this.state.neighborhood} /><br />
-                    Teléfono: <input type="text" name="phone" onChange={this.handleChange} value={this.state.phone} /><br />
-                    Celular: <input type="text" name="celphone" onChange={this.handleChange} value={this.state.celphone} /><br />
+                    Teléfono: <input type="number" name="phone" onChange={this.handleChange} value={this.state.phone} /><br />
+                    Celular: <input type="number" name="celphone" onChange={this.handleChange} value={this.state.celphone} /><br />
                     Correo electrónico: <input type="text" name="email" onChange={this.handleChange} value={this.state.email} /><br />
                     Facebook: <input type="text" name="facebook" onChange={this.handleChange} value={this.state.facebook} /><br />
                     Instagram: <input type="text" name="instagram" onChange={this.handleChange} value={this.state.instagram} /><br />
@@ -227,8 +249,8 @@ class Form extends Component{
                     Teléfono persona interesada 1: <input tyrpe="text" name="newphonecontact1" onChange={this.handleChange} value={this.state.newphonecontact1} /><br />
                     Nombre persona interesada 2: <input tyrpe="text" name="newnamecontact2" onChange={this.handleChange} value={this.state.newnamecontact2} /><br />
                     Teléfono persona interesada 2: <input tyrpe="text" name="newphonecontact2" onChange={this.handleChange} value={this.state.newphonecontact2} /><br />
+                    <button onClick={this.handleSubmit}>Enviar</button>
                 </form>
-                <button onClick={this.handleSubmit}>Enviar</button>
             </div>
         );
     }
