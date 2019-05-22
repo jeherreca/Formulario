@@ -49,10 +49,10 @@ class Form extends Component{
         this.handleDocumentRadio= this.handleDocumentRadio.bind(this);
         this.handleDepartments= this.handleDepartments.bind(this);
         this.getDepartmentCities = this.getDepartmentCities.bind(this);
-        this.onTakePhoto = this.onTakePhoto.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleInterest = this.handleInterest.bind(this)
-        this.handleDocument = this.handleDocument.bind(this)
+        this.onTakePhoto = this.onTakePhoto.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleInterest = this.handleInterest.bind(this);
+        this.handleDocument = this.handleDocument.bind(this);
     }
     componentDidMount(){
         fetch('https://www.datos.gov.co/resource/xdk5-pm3f.json').then((response) => {
@@ -72,7 +72,6 @@ class Form extends Component{
         })
     }
     handleDocument(e){
-        console.log(e.target.files[0])
         this.setState({
             documentscan: e.target.files[0],
         })
@@ -143,13 +142,13 @@ class Form extends Component{
             direccion: this.state.via+' '+this.state.number1+' # '+this.state.number2+' - '+this.state.number3+', '+this.state.house,
             sisben: this.state.health,
             barrio: this.state.neighborhood,
-            ciudad: this.state.cities,
+            ciudad: this.state.city,
             departamento: this.state.department,
             facebook: this.state.facebook,
             instagram: this.state.instagram,
             twitter: this.state.twitter,
             educacion: this.state.education,
-            profesion: this.state.profesion,
+            profesion: this.state.job,
             nombrecontacto1: this.state.newnamecontact1,
             numerocontacto1: this.state.newphonecontact1,
             nombrecontacto2: this.state.newnamecontact2,
