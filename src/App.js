@@ -1,12 +1,12 @@
 import React from 'react';
-import Form from './components/Form'
+import Formu from './components/Formu'
 
 
 
 function App() {
   return (
     <div className="App">
-      <Form />
+      <Formu />
     </div>
   );
 }
