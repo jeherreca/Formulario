@@ -175,37 +175,23 @@ class Formu extends Component{
                             Segundo apellido: <Input type="text" name="lastname2" onChange={this.handleChange} value={this.state.lastname2} /><br />
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <FormGroup check>
-                                <Label check>
-                                    <Input type="radio" value="Tarjeta de identidad" checked={this.state.document === "Tarjeta de identidad"} onChange={this.handleDocumentRadio} />
-                                    T.I
-                                </Label>
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label check>
-                                <Input type="radio" value="Cedula de ciudadania" checked={this.state.document === "Cedula de ciudadania"} onChange={this.handleDocumentRadio} />
-                                    C.C
-                                </Label>
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label check>
-                                <Input type="radio" value="Cedula de extranjeria" checked={this.state.document === "Cedula de extranjeria"} onChange={this.handleDocumentRadio} />
-                                    C.E
-                                </Label>
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label check>
-                                <Input type="radio" value="NIT" checked={this.state.document === "NIT"} onChange={this.handleDocumentRadio} />
-                                    NIT
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col>
-                            <Input type="text" name="id" onChange={this.handleChange} value={this.state.id} /><br />
-                        </Col>
-                    </Row>
+                    <FormGroup check inline>
+                        <Label check>T.I</Label>
+                        <Input type="radio" value="Tarjeta de identidad" checked={this.state.document === "Tarjeta de identidad"} onChange={this.handleDocumentRadio} />
+                    </FormGroup>
+                    <FormGroup check inline>
+                        <Label check>C.C</Label>
+                        <Input type="radio" value="Cedula de ciudadania" checked={this.state.document === "Cedula de ciudadania"} onChange={this.handleDocumentRadio} />
+                    </FormGroup>
+                    <FormGroup check inline>
+                        <Label check>C.E</Label>
+                        <Input type="radio" value="Cedula de extranjeria" checked={this.state.document === "Cedula de extranjeria"} onChange={this.handleDocumentRadio} />
+                    </FormGroup>
+                    <FormGroup check inline>
+                        <Label check>NIT</Label>
+                        <Input type="radio" value="NIT" checked={this.state.document === "NIT"} onChange={this.handleDocumentRadio} />
+                    </FormGroup>
+                    <Input type="text" name="id" onChange={this.handleChange} value={this.state.id} /><br />
                     Documento escaneado: <input type="file" name="documentscan" onChange={this.handleDocument}/><br />
                     Sexo:
                     <Input type="select" name="gender" value={this.state.gender} onChange={this.handleChange} required>
@@ -221,12 +207,16 @@ class Formu extends Component{
                     </Input><br />
                     Fecha de nacimiento: <Input type="date" name="birth" onChange={this.handleChange} value={this.state.birth} /><br />
                     Dirección: <br />
-                    <Input type="select" name="via" value={this.state.via} onChange={this.handleChange} required>
-                        <option value="" disabled selected>Selecione...</option>
-                        <option value="calle">Calle</option>
-                        <option value="carrera">Carrera</option>
-                    </Input>
-                    <Input type="text" name="number1" onChange={this.handleChange} value={this.state.number1} /> 
+                    <FormGroup inline>
+                        <Input type="select" name="via" value={this.state.via} onChange={this.handleChange} required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="calle">Calle</option>
+                            <option value="carrera">Carrera</option>
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Input type="text" name="number1" onChange={this.handleChange} value={this.state.number1} /> 
+                    </FormGroup>
                     # <Input type="text" name="number2" onChange={this.handleChange} value={this.state.number2} /> 
                     - <Input type="text" name="number3" onChange={this.handleChange} value={this.state.number3} />
                     , <Input type="text" name="house" onChange={this.handleChange} value={this.state.house} /><br />
@@ -255,7 +245,7 @@ class Formu extends Component{
                     <Input type="radio" name="disability" value="Deficiencia visual" />Deficiencia visual
                     <Input type="radio" name="disability" value="Deficiencia auditiva" />Deficiencia auditiva
                     <Input type="radio" name="disability" value="Discapacidad motriz" />Discapacidad motriz
-                    <Input type="radio" name="disability" value="Otro" />Otro<input type="text" name="Otro" onChange={this.handleChange} value={this.state.other} /><br />
+                    <Input type="radio" name="disability" value="Otro" />Otro<Input type="text" name="Otro" onChange={this.handleChange} value={this.state.other} /><br />
                     Educación:
                     <Input type="select" name="education" value={this.state.education} onChange={this.handleChange} required>
                         <option value="" disabled selected>Seleccione...</option>
